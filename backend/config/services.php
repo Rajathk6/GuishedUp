@@ -17,6 +17,10 @@ return [
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],
+    
+    'embedding' => [
+    'url' => env('EMBEDDING_SERVICE_URL'),
+    ],
 
     'resend' => [
         'key' => env('RESEND_API_KEY'),
