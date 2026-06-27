@@ -10,7 +10,7 @@ class EmbeddingRequest(BaseModel):
     text: str
 
 
-@app.post("/embed")
+@app.post("/embeddings")
 def embed(request: EmbeddingRequest):
 
     embedding = generate_embedding(request.text)
