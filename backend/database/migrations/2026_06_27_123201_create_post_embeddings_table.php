@@ -12,8 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('post_embeddings', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->foreignId('post_id')
+                ->primary()
+                ->constrained('posts')
+                ->cascadeOnDelete();
+
+            $table->text('embedding');
+
+            $table->string('model_name');
+
+            $table->string('model_version');
+            
+            $table->timestamp('created_at');
         });
     }
 
