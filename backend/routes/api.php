@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InteractionController;
 use App\Services\EmbeddingService;
 use Illuminate\Support\Facades\Route;
@@ -16,11 +17,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::post('/posts', [PostController::class,'store']);
+    Route::post('/posts', [PostController::class, 'store']);
 
-    Route::post ('/interactions', [InteractionController::class, 'store']
-);
+    Route::post('/interactions', [InteractionController::class, 'store']);
 
+    Route::get('/search', [SearchController::class, 'search']);
 });
 
 Route::get('/test-embeddings', function (EmbeddingService $service) {
@@ -28,5 +29,4 @@ Route::get('/test-embeddings', function (EmbeddingService $service) {
     return $service->generate(
         "Hello there, my name is Rajath."
     );
-
 });

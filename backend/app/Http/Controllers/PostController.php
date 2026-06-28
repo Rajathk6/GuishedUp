@@ -14,29 +14,28 @@ use Illuminate\Support\Facades\DB;
 class PostController extends Controller
 {
     public function store(
-    CreatePostRequest $request,
-    EmbeddingService $embeddingService
-)
-{
-    return DB::transaction(function () use ($request, $embeddingService) {
+        CreatePostRequest $request,
+        EmbeddingService $embeddingService
+    ) {
+        return DB::transaction(function () use ($request, $embeddingService) {
 
-        $post = Post::create([
+            $post = Post::create([
 
-            'user_id' => $request->user()->id,
+                'user_id' => $request->user()->id,
 
-            'content' => $request->content,
+                'content' => $request->content,
 
-            'image_url' => $request->image_url,
+                'image_url' => $request->image_url,
 
-            'authenticity_score' => 0.8
+                'authenticity_score' => 0.8
 
-        ]);
+            ]);
 
-        $embedding = $embeddingService
-            ->generate($post->content);
+            $embedding = $embeddingService
+                ->generate($post->content);
 
-        DB::insert(
-            "
+            DB::insert(
+                "
             INSERT INTO post_embeddings
             (
                 post_id,
@@ -49,27 +48,26 @@ class PostController extends Controller
             VALUES
             (?, ?::vector, ?, ?, NOW())
             ",
-            [
+                [
 
-                $post->id,
+                    $post->id,
 
-                '[' . implode(',', $embedding) . ']',
+                    '[' . implode(',', $embedding) . ']',
 
-                'all-MiniLM-L6-v2',
+                    'all-MiniLM-L6-v2',
 
-                '1.0'
+                    '1.0'
 
-            ]
-        );
+                ]
+            );
 
-        return response()->json([
+            return response()->json([
 
-            'message' => 'Post created successfully',
+                'message' => 'Post created successfully',
 
-            'data' => $post
+                'data' => $post
 
-        ],201);
-
-    });
-}
+            ], 201);
+        });
+    }
 }
