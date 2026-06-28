@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\InteractionController;
 use App\Services\EmbeddingService;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::post('/posts', [PostController::class,'store']);
+
+    Route::post ('/interactions', [InteractionController::class, 'store']
+);
 
 });
 
