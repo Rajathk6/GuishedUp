@@ -211,7 +211,7 @@ class FeedService
     }
 
     /**
-     * Exponential time decay
+     * Exponential time decay.
      */
     private function timeDecay(string $createdAt): float
     {

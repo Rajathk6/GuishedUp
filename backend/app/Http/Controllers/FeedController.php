@@ -25,5 +25,18 @@ class FeedController extends Controller
                 $limit
             )
         );
+
+        return response()->json([
+
+            'data' =>
+
+            $service->feed(
+
+                $request->user()->id
+
+            )
+
+        ]);
+
     }
 }
