@@ -10,10 +10,10 @@ import {
 import { getFeed } from "../api/feed";
 import PostCard from "@/components/PostCard";
 import { createInteraction } from "@/api/interactions";
-
 import { router } from "expo-router";
-
 import { Pressable } from "react-native";
+import { removeToken } from "../storage/auth";
+import { Alert } from "react-native";
 
 export default function FeedScreen() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -72,6 +72,33 @@ export default function FeedScreen() {
     }
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+
+      "Are you sure you want to logout?",
+
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+
+        {
+          text: "Logout",
+
+          style: "destructive",
+
+          onPress: async () => {
+            await removeToken();
+
+            router.replace("/login");
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <FlatList
       ListHeaderComponent={
@@ -79,15 +106,20 @@ export default function FeedScreen() {
           style={{
             flexDirection: "row",
             justifyContent: "space-evenly",
+            alignItems: "center",
             marginVertical: 16,
           }}
         >
           <Pressable onPress={() => router.push("/search")}>
-            <Text>Search</Text>
+            <Text>🔍 Search</Text>
           </Pressable>
 
           <Pressable onPress={() => router.push("/create-post")}>
-            <Text>Create Post</Text>
+            <Text>➕ Create Post</Text>
+          </Pressable>
+
+          <Pressable onPress={handleLogout}>
+            <Text style={{ color: "red" }}>Logout</Text>
           </Pressable>
         </View>
       }
