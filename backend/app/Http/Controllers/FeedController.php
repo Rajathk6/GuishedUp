@@ -11,16 +11,19 @@ class FeedController extends Controller
         Request $request,
         FeedService $service
     ) {
-        return response()->json([
+        $page = max((int) $request->query('page', 1), 1);
 
-            'data' =>
+        $limit = min(
+            max((int) $request->query('limit', 10), 1),
+            50
+        );
 
+        return response()->json(
             $service->feed(
-
-                $request->user()->id
-
+                $request->user()->id,
+                $page,
+                $limit
             )
-
-        ]);
+        );
     }
 }
