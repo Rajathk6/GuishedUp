@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { router } from "expo-router";
+import { login } from "../api/auth";
+import { saveToken } from "../storage/auth";
+
 import {
     View,
     Text,
@@ -13,6 +17,33 @@ export default function LoginScreen() {
     const [email, setEmail] = useState("");
 
     const [password, setPassword] = useState("");
+
+    const handleLogin = async () => {
+
+    try {
+
+        const response = await login(
+            email,
+            password
+        );
+
+        await saveToken(
+            response.token
+        );
+
+        router.replace("/feed");
+
+    } catch (error: any) {
+
+        Alert.alert(
+            "Login Failed",
+            error?.response?.data?.message ??
+            "Unknown Error"
+        );
+
+    }
+
+};
 
     return (
 
@@ -41,12 +72,7 @@ export default function LoginScreen() {
 
             <Pressable
                 style={styles.button}
-                onPress={() => {
-                    Alert.alert(
-                        "Login",
-                        "Button Clicked"
-                    );
-                }}
+                onPress={handleLogin}
             >
                 <Text style={styles.buttonText}>
                     Login
