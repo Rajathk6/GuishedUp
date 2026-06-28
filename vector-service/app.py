@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from services import generate_embedding
+from vector_embedding import generate_embedding
 
 app = FastAPI()
 
