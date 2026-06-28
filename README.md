@@ -224,7 +224,7 @@ Open the application using Expo Go.
 
 ---
 
-### Environment Variables
+# Environment Variables
 
 # .env.example
 
@@ -294,6 +294,24 @@ Search requests generate an embedding for the query and perform cosine similarit
 Feed ranking combines semantic similarity, interaction history, authenticity score, and time decay.
 
 ---
+
+# Postman Collection
+
+A Postman workspace containing all API endpoints used during development and testing is available below:
+
+**Postman Workspace**
+
+https://www.postman.com/db-performance/workspace/guisedup
+
+The workspace includes requests for:
+
+- Authentication
+- Feed API
+- Semantic Search
+- Create Post
+- User Interactions
+
+Import the workspace or fork it into your own Postman account to test the APIs without manually creating requests.
 
 # Notes
 
