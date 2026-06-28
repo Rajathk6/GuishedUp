@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     FlatList,
     Text,
@@ -7,10 +7,60 @@ import {
 } from "react-native";
 
 import { getFeed } from "../api/feed";
+import PostCard from "@/components/PostCard";
+import { createInteraction } from "@/api/interactions";
+
+import { router } from "expo-router";
+
+import { Pressable } from "react-native";
 
 export default function FeedScreen() {
 
     const [posts, setPosts] = useState<any[]>([]);
+
+    const viewedPosts = useRef(
+
+    new Set<number>()
+
+);
+
+    const onViewableItemsChanged =
+
+    ({ viewableItems }: any) => {
+
+        viewableItems.forEach(
+
+            async ({ item }: any) => {
+
+                if (
+
+                    viewedPosts.current.has(
+
+                        item.id
+
+                    )
+
+                ) return;
+
+                viewedPosts.current.add(
+
+                    item.id
+
+                );
+
+                await createInteraction(
+
+                    item.id,
+
+                    "view"
+
+                );
+
+            }
+
+        );
+
+    };
 
     useEffect(() => {
 
@@ -31,59 +81,83 @@ export default function FeedScreen() {
         }
 
         loadFeed();
-
+        
     }, []);
 
     return (
 
         <FlatList
 
-            data={posts}
+        ListHeaderComponent={
+            <View
+    style={{
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginVertical: 16,
+    }}
+>
 
-            keyExtractor={(item) =>
-                item.id.toString()
-            }
+    <Pressable
+        onPress={() => router.push("/search")}
+    >
 
-            renderItem={({ item }) => (
+        <Text>
 
-                <View style={styles.card}>
+            Search
 
-                    <Text style={styles.content}>
+        </Text>
 
-                        {item.content}
+    </Pressable>
 
-                    </Text>
+    <Pressable
+        onPress={() => router.push("/create-post")}
+    >
 
-                </View>
+        <Text>
 
-            )}
+            Create Post
 
-        />
+        </Text>
+
+    </Pressable>
+
+</View>
+        }
+
+    data={posts}
+
+    keyExtractor={(item) =>
+        item.id.toString()
+    }
+
+    renderItem={({ item }) => (
+
+    <PostCard
+
+        post={item}
+
+        onReaction={async (id) => {
+            await createInteraction(
+                id,
+                "reaction"
+            );
+        }}
+
+        onReply={async (id) => {
+            await createInteraction(
+                id,
+                "reply"
+            );
+        }}
+
+    />
+
+)}
+
+    onViewableItemsChanged={onViewableItemsChanged}
+
+ />
 
     );
 
 }
-
-const styles = StyleSheet.create({
-
-    card: {
-
-        padding: 16,
-
-        margin: 12,
-
-        backgroundColor: "#fff",
-
-        borderRadius: 8,
-
-        elevation: 2
-
-    },
-
-    content: {
-
-        fontSize: 16
-
-    }
-
-});
