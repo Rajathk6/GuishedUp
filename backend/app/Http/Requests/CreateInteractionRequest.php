@@ -21,19 +21,19 @@ class CreateInteractionRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-{
-    return [
+    {
+        return [
 
-        'post_id' => [
-            'required',
-            'exists:posts,id'
-        ],
+            'post_id' => [
+                'required',
+                'exists:posts,id'
+            ],
 
-        'type' => [
-            'required',
-            'in:view,reaction,reply'
-        ]
+            'type' => [
+                'required',
+                'in:view,reaction,reply'
+            ]
 
-    ];
-}
+        ];
+    }
 }
