@@ -20,7 +20,7 @@ class FeedService
             return [];
         }
 
-        $posts = $this->getCandidatePosts();
+        $posts = $this->getCandidatePosts($userId);
         $totalPosts = count($posts);
 
         foreach ($posts as $post) {
@@ -67,17 +67,20 @@ class FeedService
     /**
      * Fetch all candidate posts with embeddings.
      */
-    private function getCandidatePosts(): array
-    {
-        return DB::select("
-            SELECT
-                p.*,
-                pe.embedding::text AS embedding
-            FROM posts p
-            JOIN post_embeddings pe
-                ON pe.post_id = p.id
-        ");
-    }
+    private function getCandidatePosts(int $userId): array
+{
+    return DB::select("
+        SELECT
+            p.*,
+            pe.embedding::text AS embedding
+        FROM posts p
+        JOIN post_embeddings pe
+            ON pe.post_id = p.id
+        WHERE p.user_id <> ?
+    ", [
+        $userId
+    ]);
+}
 
     /**
      * Build the user's interest vector.
@@ -90,8 +93,11 @@ class FeedService
             FROM interactions i
             JOIN post_embeddings pe
                 ON pe.post_id = i.post_id
+            JOIN posts p
+                ON p.id = pe.post_id
             WHERE i.user_id = ?
-        ", [$userId]);
+            AND p.user_id <> ?
+        ", [$userId, $userId]);
 
         if (empty($rows)) {
             return null;
