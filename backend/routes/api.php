@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InteractionController;
+use App\Http\Controllers\FeedController;
 use App\Services\EmbeddingService;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/interactions', [InteractionController::class, 'store']);
 
     Route::get('/search', [SearchController::class, 'search']);
+
+    Route::get('/feed', [FeedController::class, 'feed']);
 });
 
 Route::get('/test-embeddings', function (EmbeddingService $service) {
