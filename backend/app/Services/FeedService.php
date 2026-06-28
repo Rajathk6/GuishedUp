@@ -16,20 +16,31 @@ class FeedService
         $userEmbedding = $this->getUserEmbedding($userId);
         $offset = ($page - 1) * $limit;
 
-        if ($userEmbedding === null) {
-            return [];
-        }
+        $isColdStart = $userEmbedding === null;
 
         $posts = $this->getCandidatePosts($userId);
         $totalPosts = count($posts);
 
         foreach ($posts as $post) {
-            $post->score = $this->calculateFeedScore(
-                $userId,
-                $userEmbedding,
-                $post
-            );
-        }
+
+    if ($isColdStart) {
+
+        $post->score =
+            (0.70 * $post->authenticity_score)
+            +
+            (0.30 * $this->timeDecay($post->created_at));
+
+    } else {
+
+        $post->score = $this->calculateFeedScore(
+            $userId,
+            $userEmbedding,
+            $post
+        );
+
+    }
+
+}
 
         usort($posts, fn($a, $b) => $b->score <=> $a->score);
 
