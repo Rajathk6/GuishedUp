@@ -4,148 +4,114 @@ import { login } from "../api/auth";
 import { saveToken } from "../storage/auth";
 
 import {
-    View,
-    Text,
-    TextInput,
-    Pressable,
-    StyleSheet,
-    Alert,
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  Alert,
 } from "react-native";
 
 export default function LoginScreen() {
+  const [email, setEmail] = useState("");
 
-    const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const [password, setPassword] = useState("");
-
-    const handleLogin = async () => {
-
+  const handleLogin = async () => {
     try {
+      const response = await login(email, password);
 
-        const response = await login(
-            email,
-            password
-        );
+      await saveToken(response.token);
 
-        await saveToken(
-            response.token
-        );
-
-        router.replace("/feed");
-
+      router.replace("/feed");
     } catch (error: any) {
-    console.log("LOGIN ERROR:", error);
-    console.log("RESPONSE:", error?.response);
-    console.log("DATA:", error?.response?.data);
+      console.log("LOGIN ERROR:", error);
+      console.log("RESPONSE:", error?.response);
+      console.log("DATA:", error?.response?.data);
 
-    Alert.alert(
+      Alert.alert(
         "Login Failed",
-        JSON.stringify(error?.response?.data ?? error.message)
-    );
-}
+        JSON.stringify(error?.response?.data ?? error.message),
+      );
+    }
+  };
 
-};
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>GuisedUp</Text>
 
-    return (
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-        <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
 
-            <Text style={styles.title}>
-                GuisedUp
-            </Text>
-
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                autoCapitalize="none"
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-            />
-
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
-
-            <Pressable
-                style={styles.button}
-                onPress={handleLogin}
-            >
-                <Text style={styles.buttonText}>
-                    Login
-                </Text>
-            </Pressable>
-
-        </View>
-
-    );
-
+      <Pressable style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Login</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
 
-    container: {
+    justifyContent: "center",
 
-        flex: 1,
+    padding: 20,
 
-        justifyContent: "center",
+    backgroundColor: "#fff",
+  },
 
-        padding: 20,
+  title: {
+    fontSize: 32,
 
-        backgroundColor: "#fff"
+    fontWeight: "bold",
 
-    },
+    marginBottom: 40,
 
-    title: {
+    textAlign: "center",
+  },
 
-        fontSize: 32,
+  input: {
+    borderWidth: 1,
 
-        fontWeight: "bold",
+    borderColor: "#ccc",
 
-        marginBottom: 40,
+    borderRadius: 8,
 
-        textAlign: "center"
+    padding: 12,
 
-    },
+    marginBottom: 16,
+  },
 
-    input: {
+  button: {
+    backgroundColor: "#007AFF",
 
-        borderWidth: 1,
+    padding: 14,
 
-        borderColor: "#ccc",
+    borderRadius: 8,
 
-        borderRadius: 8,
+    alignItems: "center",
+  },
 
-        padding: 12,
+  buttonText: {
+    color: "white",
 
-        marginBottom: 16
+    fontSize: 16,
 
-    },
-
-    button: {
-
-        backgroundColor: "#007AFF",
-
-        padding: 14,
-
-        borderRadius: 8,
-
-        alignItems: "center"
-
-    },
-
-    buttonText: {
-
-        color: "white",
-
-        fontSize: 16,
-
-        fontWeight: "600"
-
-    }
-
+    fontWeight: "600",
+  },
 });

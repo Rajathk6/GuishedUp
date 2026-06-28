@@ -1,145 +1,106 @@
 import { useState } from "react";
 import {
-    View,
-    Text,
-    TextInput,
-    FlatList,
-    Pressable,
-    StyleSheet,
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Pressable,
+  StyleSheet,
 } from "react-native";
 
 import { searchPosts } from "../api/search";
 
 export default function SearchScreen() {
+  const [query, setQuery] = useState("");
 
-    const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any[]>([]);
 
-    const [results, setResults] = useState<any[]>([]);
+  async function handleSearch() {
+    if (!query.trim()) return;
 
-    async function handleSearch() {
+    try {
+      const response = await searchPosts(query);
 
-        if (!query.trim()) return;
+      setResults(response.data);
+    } catch (error: any) {
+      console.log("Status:", error?.response?.status);
 
-        try {
+      console.log("Data:", error?.response?.data);
 
-            const response = await searchPosts(query);
-
-            setResults(response.data);
-
-        } catch (error: any) {
-
-    console.log("Status:", error?.response?.status);
-
-    console.log("Data:", error?.response?.data);
-
-    console.log("Headers:", error?.response?.headers);
-
-}
-
+      console.log("Headers:", error?.response?.headers);
     }
+  }
 
-    return (
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Search..."
+        value={query}
+        onChangeText={setQuery}
+      />
 
-        <View style={styles.container}>
+      <Pressable style={styles.button} onPress={handleSearch}>
+        <Text style={styles.buttonText}>Search</Text>
+      </Pressable>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Search..."
-                value={query}
-                onChangeText={setQuery}
-            />
-
-            <Pressable
-                style={styles.button}
-                onPress={handleSearch}
-            >
-                <Text style={styles.buttonText}>
-                    Search
-                </Text>
-            </Pressable>
-
-            <FlatList
-                data={results}
-                keyExtractor={(item) =>
-                    item.id.toString()
-                }
-                renderItem={({ item }) => (
-
-                    <View style={styles.card}>
-
-                        <Text>
-
-                            {item.content}
-
-                        </Text>
-
-                    </View>
-
-                )}
-            />
-
-        </View>
-
-    );
-
+      <FlatList
+        data={results}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text>{item.content}</Text>
+          </View>
+        )}
+      />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
 
-    container: {
+    padding: 20,
 
-        flex: 1,
+    backgroundColor: "#fff",
+  },
 
-        padding: 20,
+  input: {
+    borderWidth: 1,
 
-        backgroundColor: "#fff"
+    borderRadius: 8,
 
-    },
+    padding: 12,
 
-    input: {
+    marginBottom: 12,
+  },
 
-        borderWidth: 1,
+  button: {
+    backgroundColor: "#007AFF",
 
-        borderRadius: 8,
+    padding: 12,
 
-        padding: 12,
+    borderRadius: 8,
 
-        marginBottom: 12
+    alignItems: "center",
 
-    },
+    marginBottom: 20,
+  },
 
-    button: {
+  buttonText: {
+    color: "white",
 
-        backgroundColor: "#007AFF",
+    fontWeight: "bold",
+  },
 
-        padding: 12,
+  card: {
+    padding: 16,
 
-        borderRadius: 8,
+    backgroundColor: "#F5F5F5",
 
-        alignItems: "center",
+    marginBottom: 10,
 
-        marginBottom: 20
-
-    },
-
-    buttonText: {
-
-        color: "white",
-
-        fontWeight: "bold"
-
-    },
-
-    card: {
-
-        padding: 16,
-
-        backgroundColor: "#F5F5F5",
-
-        marginBottom: 10,
-
-        borderRadius: 8
-
-    }
-
+    borderRadius: 8,
+  },
 });

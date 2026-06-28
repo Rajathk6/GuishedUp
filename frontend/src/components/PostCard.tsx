@@ -1,138 +1,100 @@
-import {
-    View,
-    Text,
-    Image,
-    Pressable,
-    StyleSheet,
-} from "react-native";
+import { View, Text, Image, Pressable, StyleSheet } from "react-native";
 
 import { Alert } from "react-native";
 type Props = {
+  post: any;
 
-    post: any;
+  onReaction?: (id: number) => void;
 
-    onReaction?: (id: number) => void;
-
-    onReply?: (id: number) => void;
-
+  onReply?: (id: number) => void;
 };
 
 export default function PostCard({
+  post,
 
-    post,
+  onReaction,
 
-    onReaction,
-
-    onReply,
-
+  onReply,
 }: Props) {
+  return (
+    <View style={styles.card}>
+      <Text style={styles.content}>{post.content}</Text>
 
-    return (
+      {post.image_url && (
+        <Image
+          source={{
+            uri: post.image_url,
+          }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      )}
 
-        <View style={styles.card}>
+      <View style={styles.actions}>
+        <Pressable
+          onPress={async () => {
+            await onReaction?.(post.id);
 
-            <Text style={styles.content}>
+            Alert.alert(
+              "Reaction Recorded",
+              "Your reaction has been recorded.",
+            );
+          }}
+        >
+          <Text>❤️ React</Text>
+        </Pressable>
 
-                {post.content}
+        <Pressable
+          onPress={async () => {
+            await onReply?.(post.id);
 
-            </Text>
-
-            {post.image_url && (
-
-                <Image
-
-                    source={{
-                        uri: post.image_url,
-                    }}
-
-                    style={styles.image}
-
-                    resizeMode="cover"
-
-                />
-
-            )}
-
-            <View style={styles.actions}>
-
-                <Pressable
-    onPress={async () => {
-        await onReaction?.(post.id);
-
-        Alert.alert(
-            "Reaction Recorded",
-            "Your reaction has been recorded."
-        );
-    }}
->
-    <Text>❤️ React</Text>
-</Pressable>
-
-                <Pressable
-    onPress={async () => {
-        await onReply?.(post.id);
-
-        Alert.alert(
-            "Reply Recorded",
-            "Your reply interaction has been recorded."
-        );
-    }}
->
-    <Text>💬 Reply</Text>
-</Pressable>
-
-            </View>
-
-        </View>
-
-    );
-
+            Alert.alert(
+              "Reply Recorded",
+              "Your reply interaction has been recorded.",
+            );
+          }}
+        >
+          <Text>💬 Reply</Text>
+        </Pressable>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "white",
 
-    card: {
+    marginVertical: 8,
 
-        backgroundColor: "white",
+    marginHorizontal: 16,
 
-        marginVertical: 8,
+    borderRadius: 10,
 
-        marginHorizontal: 16,
+    padding: 16,
 
-        borderRadius: 10,
+    elevation: 2,
+  },
 
-        padding: 16,
+  content: {
+    fontSize: 16,
 
-        elevation: 2,
+    marginBottom: 12,
+  },
 
-    },
+  image: {
+    width: "100%",
 
-    content: {
+    height: 220,
 
-        fontSize: 16,
+    borderRadius: 8,
 
-        marginBottom: 12,
+    marginBottom: 12,
+  },
 
-    },
+  actions: {
+    flexDirection: "row",
 
-    image: {
-
-        width: "100%",
-
-        height: 220,
-
-        borderRadius: 8,
-
-        marginBottom: 12,
-
-    },
-
-    actions: {
-
-        flexDirection: "row",
-
-        justifyContent: "space-between",
-
-    },
-
+    justifyContent: "space-between",
+  },
 });

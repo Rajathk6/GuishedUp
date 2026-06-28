@@ -1,12 +1,12 @@
 import { useState } from "react";
 
 import {
-    View,
-    TextInput,
-    Pressable,
-    Text,
-    StyleSheet,
-    Alert,
+  View,
+  TextInput,
+  Pressable,
+  Text,
+  StyleSheet,
+  Alert,
 } from "react-native";
 
 import { createPost } from "../api/post";
@@ -14,145 +14,92 @@ import { createPost } from "../api/post";
 import { router } from "expo-router";
 
 export default function CreatePostScreen() {
+  const [content, setContent] = useState("");
 
-    const [content, setContent] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
-    const [imageUrl, setImageUrl] = useState("");
+  async function handleCreate() {
+    try {
+      await createPost(content, imageUrl);
 
-    async function handleCreate() {
+      Alert.alert("Success", "Post Created");
 
-        try {
-
-            await createPost(
-                content,
-                imageUrl
-            );
-
-            Alert.alert(
-                "Success",
-                "Post Created"
-            );
-
-            router.replace("/feed");
-
-        } catch (error) {
-
-            console.log(error);
-
-        }
-
+      router.replace("/feed");
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    return (
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.content}
+        multiline
+        placeholder="What's on your mind?"
+        value={content}
+        onChangeText={setContent}
+      />
 
-        <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Image URL (optional)"
+        value={imageUrl}
+        onChangeText={setImageUrl}
+      />
 
-            <TextInput
-
-                style={styles.content}
-
-                multiline
-
-                placeholder="What's on your mind?"
-
-                value={content}
-
-                onChangeText={setContent}
-
-            />
-
-            <TextInput
-
-                style={styles.input}
-
-                placeholder="Image URL (optional)"
-
-                value={imageUrl}
-
-                onChangeText={setImageUrl}
-
-            />
-
-            <Pressable
-
-                style={styles.button}
-
-                onPress={handleCreate}
-
-            >
-
-                <Text style={styles.buttonText}>
-
-                    Create Post
-
-                </Text>
-
-            </Pressable>
-
-        </View>
-
-    );
-
+      <Pressable style={styles.button} onPress={handleCreate}>
+        <Text style={styles.buttonText}>Create Post</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
 
-    container: {
+    padding: 20,
 
-        flex: 1,
+    backgroundColor: "#fff",
+  },
 
-        padding: 20,
+  content: {
+    borderWidth: 1,
 
-        backgroundColor: "#fff"
+    borderRadius: 8,
 
-    },
+    minHeight: 140,
 
-    content: {
+    padding: 12,
 
-        borderWidth: 1,
+    marginBottom: 16,
 
-        borderRadius: 8,
+    textAlignVertical: "top",
+  },
 
-        minHeight: 140,
+  input: {
+    borderWidth: 1,
 
-        padding: 12,
+    borderRadius: 8,
 
-        marginBottom: 16,
+    padding: 12,
 
-        textAlignVertical: "top"
+    marginBottom: 20,
+  },
 
-    },
+  button: {
+    backgroundColor: "#007AFF",
 
-    input: {
+    padding: 14,
 
-        borderWidth: 1,
+    borderRadius: 8,
 
-        borderRadius: 8,
+    alignItems: "center",
+  },
 
-        padding: 12,
+  buttonText: {
+    color: "white",
 
-        marginBottom: 20
-
-    },
-
-    button: {
-
-        backgroundColor: "#007AFF",
-
-        padding: 14,
-
-        borderRadius: 8,
-
-        alignItems: "center"
-
-    },
-
-    buttonText: {
-
-        color: "white",
-
-        fontWeight: "bold"
-
-    }
-
+    fontWeight: "bold",
+  },
 });
