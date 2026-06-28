@@ -8,15 +8,20 @@ use Illuminate\Support\Facades\DB;
 
 class FeedService
 {
-    public function feed(int $userId): array
-    {
+    public function feed(
+        int $userId,
+        int $page = 1,
+        int $limit = 10
+    ): array {
         $userEmbedding = $this->getUserEmbedding($userId);
+        $offset = ($page - 1) * $limit;
 
         if ($userEmbedding === null) {
             return [];
         }
 
         $posts = $this->getCandidatePosts();
+        $totalPosts = count($posts);
 
         foreach ($posts as $post) {
             $post->score = $this->calculateFeedScore(
@@ -28,7 +33,35 @@ class FeedService
 
         usort($posts, fn($a, $b) => $b->score <=> $a->score);
 
-        return array_slice($posts, 0, 20);
+        $items = array_slice(
+            $posts,
+            $offset,
+            $limit
+        );
+
+        return [
+
+            'data' => $items,
+
+            'pagination' => [
+
+                'page' => $page,
+
+                'limit' => $limit,
+
+                'total' => $totalPosts,
+
+                'total_pages' => (int) ceil(
+                    $totalPosts / $limit
+                ),
+
+                'has_next' => ($offset + $limit) < $totalPosts,
+
+                'has_previous' => $page > 1
+
+            ]
+
+        ];
     }
 
     /**
