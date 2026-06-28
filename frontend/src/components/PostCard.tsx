@@ -6,6 +6,7 @@ import {
     StyleSheet,
 } from "react-native";
 
+import { Alert } from "react-native";
 type Props = {
 
     post: any;
@@ -55,32 +56,30 @@ export default function PostCard({
             <View style={styles.actions}>
 
                 <Pressable
-                    onPress={() =>
-                        onReaction?.(post.id)
-                    }
-                >
+    onPress={async () => {
+        await onReaction?.(post.id);
 
-                    <Text>
-
-                        ❤️ React
-
-                    </Text>
-
-                </Pressable>
+        Alert.alert(
+            "Reaction Recorded",
+            "Your reaction has been recorded."
+        );
+    }}
+>
+    <Text>❤️ React</Text>
+</Pressable>
 
                 <Pressable
-                    onPress={() =>
-                        onReply?.(post.id)
-                    }
-                >
+    onPress={async () => {
+        await onReply?.(post.id);
 
-                    <Text>
-
-                        💬 Reply
-
-                    </Text>
-
-                </Pressable>
+        Alert.alert(
+            "Reply Recorded",
+            "Your reply interaction has been recorded."
+        );
+    }}
+>
+    <Text>💬 Reply</Text>
+</Pressable>
 
             </View>
 

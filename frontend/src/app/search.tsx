@@ -26,11 +26,15 @@ export default function SearchScreen() {
 
             setResults(response.data);
 
-        } catch (error) {
+        } catch (error: any) {
 
-            console.log(error);
+    console.log("Status:", error?.response?.status);
 
-        }
+    console.log("Data:", error?.response?.data);
+
+    console.log("Headers:", error?.response?.headers);
+
+}
 
     }
 
