@@ -34,14 +34,15 @@ export default function LoginScreen() {
         router.replace("/feed");
 
     } catch (error: any) {
+    console.log("LOGIN ERROR:", error);
+    console.log("RESPONSE:", error?.response);
+    console.log("DATA:", error?.response?.data);
 
-        Alert.alert(
-            "Login Failed",
-            error?.response?.data?.message ??
-            "Unknown Error"
-        );
-
-    }
+    Alert.alert(
+        "Login Failed",
+        JSON.stringify(error?.response?.data ?? error.message)
+    );
+}
 
 };
 
